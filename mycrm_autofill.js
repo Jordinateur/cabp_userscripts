@@ -3,7 +3,7 @@
 // @namespace    http://tampermonkey.net/
 // @updateURL    https://github.com/Jordinateur/cabp_userscripts/raw/master/mycrm_autofill.js
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/mycrm_autofill.js
-// @version      0.1
+// @version      0.2
 // @description  try to take over the world!
 // @author       You
 // @match        http://nep10-crmsprdapa.ca-technologies.fr/CRMServices/MyCRM/index.php?m=workflow&p=ficheDemande&num=*

@@ -1,6 +1,8 @@
 // ==UserScript==
 // @name         Autocomplete vars MyCRM
 // @namespace    http://tampermonkey.net/
+// @updateURL    https://github.com/Jordinateur/cabp_userscripts/raw/master/mycrm_autofill.js
+// @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/mycrm_autofill.js
 // @version      0.1
 // @description  try to take over the world!
 // @author       You

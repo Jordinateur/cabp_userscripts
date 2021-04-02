@@ -2,7 +2,7 @@
 // @name         Autocomplete vars MyCRM
 // @namespace    http://tampermonkey.net/
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/mycrm_autofill.js
-// @version      0.3
+// @version      0.4
 // @description  try to take over the world!
 // @author       You
 // @match        https://nep10-crmsprdapa.ca-technologies.fr/CRMServices/MyCRM/index.php?m=workflow&p=ficheDemande&num=*

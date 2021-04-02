@@ -5,7 +5,7 @@
 // @version      0.3
 // @description  try to take over the world!
 // @author       You
-// @match        http://nep10-crmsprdapa.ca-technologies.fr/CRMServices/MyCRM/index.php?m=workflow&p=ficheDemande&num=*
+// @match        https://nep10-crmsprdapa.ca-technologies.fr/CRMServices/MyCRM/index.php?m=workflow&p=ficheDemande&num=*
 // @grant        none
 // ==/UserScript==
 

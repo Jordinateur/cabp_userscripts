@@ -5,6 +5,7 @@
 // @description  Change perso
 // @author       You
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/select_zdg_perso.js
+// @updateURL    https://github.com/Jordinateur/cabp_userscripts/raw/master/select_zdg_perso.js
 // @match        https://www.credit-agricole.fr/ca-*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=mozilla.org
 // @grant        none

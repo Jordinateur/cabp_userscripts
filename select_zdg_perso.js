@@ -20,6 +20,9 @@
         const $select = document.createElement('select');
         $select.style.color = 'black';
         $select.style.marginTop = '30px';
+        $select.style.width = '100%';
+        $select.style.padding = '6px';
+        $select.style.fontSize = '120%';
         Object.keys(ciblages).forEach(cible => {
             const $opt = document.createElement('option');
             $opt.innerHTML = cible;

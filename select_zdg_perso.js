@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Select ZdG Perso
 // @namespace    https://www.credit-agricole.fr/*
-// @version      0.2
+// @version      0.3
 // @description  Change perso
 // @author       You
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/select_zdg_perso.js
@@ -13,17 +13,28 @@
 
 (function() {
     'use strict';
-    if(sessionStorage.getItem('ContextHubPersistence') !== null){
+    function resolve(path, obj) {
+        return path.split('.').reduce(function(prev, curr) {
+            return prev ? prev[curr] : null
+        }, obj || self)
+    }
+    if(sessionStorage.getItem('ContextHubPersistence') !== "{}"){
         const ctxHub = JSON.parse(sessionStorage.getItem('ContextHubPersistence'));
         const ciblages = ctxHub.store['marketing-messages'].marketingMessages
-        const $ZdGWrapper = document.getElementById('_content_ca_cr887_npc_fr_particulier_operations_synthese_jcr_content_personnalisation')
-        const url = 'https://www.credit-agricole.fr/content/campaigns/ca/cr887/mk-#pj#/mk-#a#/synthese-personnalisation/jcr:content/par.html'
+        const idCR = document.cookie.match(/caisse\-regionale=(.*?);/)[1]
+        const crPath = document.cookie.match(/cr\-path=(.*?);/)[1]
+        const idCreator = document.location.href.split(crPath)[1].split('.')[0].split('/').join('_')
+        console.log('[id^="_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content"]')
+        const $ZdGWrapper = document.getElementById('_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content_personnalisation') || document.querySelector('[id^="_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content"]')
+        const synthese = document.getElementById('_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content_personnalisation') !== null
+        const url = synthese ? 'https://www.credit-agricole.fr/content/campaigns/ca/'+idCR+'/mk-#pj#/mk-#a#/synthese-personnalisation/jcr:content/par.html' : 'https://www.credit-agricole.fr/content/campaigns/ca/'+idCR+'/mk-#pj#/mk-#a#/'+idCreator.split('_')[idCreator.split('_').length - 1]+'-new_zdg/jcr:content/par.html'
         const $select = document.createElement('select');
         $select.style.color = 'black';
         $select.style.marginTop = '30px';
         $select.style.width = '100%';
         $select.style.padding = '6px';
         $select.style.fontSize = '120%';
+        if(!synthese) $select.style.position = 'absolute';
         Object.keys(ciblages).forEach(cible => {
             const $opt = document.createElement('option');
             $opt.innerHTML = cible;
@@ -42,7 +53,15 @@
                 }
                 return raw.text()
             }).then(html => {
-                $ZdGWrapper.innerHTML = html;
+                $ZdGWrapper.innerHTML = html ? html : "<p>Erreur</p>";
+                if(html){
+                    const $npc_vars = $ZdGWrapper.querySelectorAll('[data-vp]')
+                    console.log($npc_vars)
+                    $npc_vars.forEach(vp => {
+                        const var_path = vp.getAttribute('data-vp').replace('/','.')
+                        vp.innerHTML = resolve(var_path,ctxHub.store)
+                    })
+                }
             }).catch(e => {
                 console.log(e)
                 alert('Not found')

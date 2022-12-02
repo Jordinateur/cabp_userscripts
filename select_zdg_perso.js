@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Select ZdG Perso
 // @namespace    https://www.credit-agricole.fr/*
-// @version      0.3
+// @version      0.2
 // @description  Change perso
 // @author       You
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/select_zdg_perso.js
@@ -24,7 +24,6 @@
         const idCR = document.cookie.match(/caisse\-regionale=(.*?);/)[1]
         const crPath = document.cookie.match(/cr\-path=(.*?);/)[1]
         const idCreator = document.location.href.split(crPath)[1].split('.')[0].split('/').join('_')
-        console.log('[id^="_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content"]')
         const $ZdGWrapper = document.getElementById('_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content_personnalisation') || document.querySelector('[id^="_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content"]')
         const synthese = document.getElementById('_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content_personnalisation') !== null
         const url = synthese ? 'https://www.credit-agricole.fr/content/campaigns/ca/'+idCR+'/mk-#pj#/mk-#a#/synthese-personnalisation/jcr:content/par.html' : 'https://www.credit-agricole.fr/content/campaigns/ca/'+idCR+'/mk-#pj#/mk-#a#/'+idCreator.split('_')[idCreator.split('_').length - 1]+'-new_zdg/jcr:content/par.html'
@@ -36,10 +35,17 @@
         $select.style.fontSize = '120%';
         if(!synthese) $select.style.position = 'absolute';
         Object.keys(ciblages).forEach(cible => {
-            const $opt = document.createElement('option');
-            $opt.innerHTML = cible;
-            $opt.id = cible;
-            $select.appendChild($opt);
+            const pj = cible.split('-')[1];
+            const a = cible.split('-')[2];
+            fetch(url.replace('#pj#',pj).replace('#a#',a)).then(raw => {
+                if(raw.status == 200) {
+                     const $opt = document.createElement('option');
+                    $opt.innerHTML = cible;
+                    $opt.id = cible;
+                    $select.appendChild($opt);
+                }
+            }).catch(e => e)
+
         })
         $ZdGWrapper.after($select);
         $select.onchange = () => {

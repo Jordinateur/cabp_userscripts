@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Select ZdG Perso
 // @namespace    https://www.credit-agricole.fr/*
-// @version      0.2
+// @version      0.3
 // @description  Change perso
 // @author       You
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/select_zdg_perso.js
@@ -64,7 +64,8 @@
                     const $npc_vars = $ZdGWrapper.querySelectorAll('[data-vp]')
                     console.log($npc_vars)
                     $npc_vars.forEach(vp => {
-                        const var_path = vp.getAttribute('data-vp').replace('/','.')
+                        let var_path = vp.getAttribute('data-vp').replace('/','.')
+                        var_path = var_path.replace('marketing-messages','marketing-messages.marketingMessages.mk-'+pj+'-'+a+'.customValues')
                         vp.innerHTML = resolve(var_path,ctxHub.store)
                     })
                 }

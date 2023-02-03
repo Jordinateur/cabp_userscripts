@@ -2,7 +2,7 @@
 // @name         Jerome la bannière
 // @namespace    http://tampermonkey.net/
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/jerome_la_banniere.js
-// @version      0.1
+// @version      0.2
 // @description  try to take over the world!
 // @author       You
 // @match        https://www.credit-agricole.fr/ca-briepicardie/*
@@ -52,7 +52,7 @@ function showImageInput(){
             for(var i = 0; i < banner_elements.length; i++){
                 var banner_element = banner_elements[i];
                 var change_me = document.createElement('button');
-                change_me.innerText = 'Changer moi...'
+                change_me.innerText = 'Changez-moi !'
                 change_me.style.position = 'absolute';
                 change_me.style.zIndex = '100';
                 change_me.onclick = () => {

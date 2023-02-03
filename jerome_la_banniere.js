@@ -53,7 +53,7 @@ function showImageInput(){
             for(var i = 0; i < banner_elements.length; i++){
                 var banner_element = banner_elements[i];
                 var change_me = document.createElement('button');
-                change_me.innerText = 'Changer moi...'
+                change_me.innerText = 'Changez moi !'
                 change_me.style.position = 'absolute';
                 change_me.style.zIndex = '100';
                 change_me.onclick = () => {

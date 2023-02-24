@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Select ZdG Perso
 // @namespace    https://www.credit-agricole.fr/*
-// @version      0.3
+// @version      0.4
 // @description  Change perso
 // @author       You
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/select_zdg_perso.js
@@ -18,30 +18,36 @@
             return prev ? prev[curr] : null
         }, obj || self)
     }
-    if(sessionStorage.getItem('ContextHubPersistence') !== "{}"){
-        const ctxHub = JSON.parse(sessionStorage.getItem('ContextHubPersistence'));
-        const ciblages = ctxHub.store['marketing-messages'].marketingMessages
-        const idCR = document.cookie.match(/caisse\-regionale=(.*?);/)[1]
-        const crPath = document.cookie.match(/cr\-path=(.*?);/)[1]
-        const idCreator = document.location.href.split(crPath)[1].split('.')[0].split('/').join('_')
-        const $ZdGWrapper = document.getElementById('_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content_personnalisation') || document.querySelector('[id^="_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content"]')
-        const synthese = document.getElementById('_content_ca_'+idCR+'_npc_fr_'+idCreator+'_jcr_content_personnalisation') !== null
-        const url = synthese ? 'https://www.credit-agricole.fr/content/campaigns/ca/'+idCR+'/mk-#pj#/mk-#a#/synthese-personnalisation/jcr:content/par.html' : 'https://www.credit-agricole.fr/content/campaigns/ca/'+idCR+'/mk-#pj#/mk-#a#/'+idCreator.split('_')[idCreator.split('_').length - 1]+'-new_zdg/jcr:content/par.html'
+
+    function createZdGSelector(){
+        const ctxHub = JSON.parse(sessionStorage.getItem('ContextHubPersistence'))
+        const teasers = ContextHub.SegmentEngine.PageInteraction.TeaserManager.getAllTeasers()
+        const variants = teasers[Object.keys(teasers)[0]].details.variants
+
+        const $ZdGWrapper = document.getElementById(Object.keys(teasers)[0])
         const $select = document.createElement('select');
         $select.style.color = 'black';
         $select.style.marginTop = '30px';
         $select.style.width = '100%';
         $select.style.padding = '6px';
         $select.style.fontSize = '120%';
-        if(!synthese) $select.style.position = 'absolute';
-        Object.keys(ciblages).forEach(cible => {
-            const pj = cible.split('-')[1];
-            const a = cible.split('-')[2];
-            fetch(url.replace('#pj#',pj).replace('#a#',a)).then(raw => {
+        if(Object.keys(teasers)[0].indexOf('operations_synthese_jcr_') === -1) $select.style.position = 'absolute';
+        variants.forEach(variant => {
+            console.log(variant)
+            fetch(variant.url).then(raw => {
                 if(raw.status == 200) {
                      const $opt = document.createElement('option');
-                    $opt.innerHTML = cible;
-                    $opt.id = cible;
+                     const segments = variant.segments
+
+                    if(segments.length > 0){
+                        const mkpj = segments[0].split('/')[segments[0].split('/').length - 1]
+                        $opt.innerHTML = mkpj
+                        $opt.id = mkpj
+                    }else{
+                        $opt.innerHTML = "ZdG_Selector_" + variant.title;
+                        $opt.id = "ZdG_Selector_" + variant.title;
+                    }
+                    $opt.dataset.variant = JSON.stringify(variant)
                     $select.appendChild($opt);
                 }
             }).catch(e => e)
@@ -49,11 +55,11 @@
         })
         $ZdGWrapper.after($select);
         $select.onchange = () => {
-            const pj = $select.value.split('-')[1];
-            const a = $select.value.split('-')[2];
-            fetch(url.replace('#pj#',pj).replace('#a#',a)).then(raw => {
+            const $opt = document.getElementById($select.value)
+            const variant = JSON.parse($opt.dataset.variant)
+            console.log(variant.url)
+            fetch(variant.url).then(raw => {
                 if(raw.status != 200) {
-                    const $opt = document.getElementById($select.value)
                     $opt.parentNode.removeChild($opt)
                     return null
                 }
@@ -63,6 +69,9 @@
                 if(html){
                     const $npc_vars = $ZdGWrapper.querySelectorAll('[data-vp]')
                     console.log($npc_vars)
+                    const pj = $opt.id.match(/mk\-(pj\d.*)\-.*/)[1]
+                    const a = $opt.id.match(/\-(a\d.*)$/)[1]
+                    console.log(pj,a)
                     $npc_vars.forEach(vp => {
                         let var_path = vp.getAttribute('data-vp').replace('/','.')
                         var_path = var_path.replace('marketing-messages','marketing-messages.marketingMessages.mk-'+pj+'-'+a+'.customValues')
@@ -74,7 +83,20 @@
                 alert('Not found')
             })
         }
-    }else{
-        console.log('ERRRRR');
     }
+
+    //createZdGSelector();
+    let countInt = 0;
+    const waitInt = setInterval(function(){
+        if(Object.keys(ContextHub.SegmentEngine.PageInteraction.TeaserManager.getAllTeasers()).length > 0){
+            clearInterval(waitInt)
+            createZdGSelector()
+        }else{
+            if(countInt > 5){
+                clearInterval(waitInt)
+            }else{
+                countInt++
+            }
+        }
+    })
 })();

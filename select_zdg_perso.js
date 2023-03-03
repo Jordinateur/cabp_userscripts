@@ -22,7 +22,7 @@
     function createZdGSelector(){
         const ctxHub = JSON.parse(sessionStorage.getItem('ContextHubPersistence'))
         const teasers = ContextHub.SegmentEngine.PageInteraction.TeaserManager.getAllTeasers()
-        const variants = teasers[Object.keys(teasers)[0]].details.variants
+        const variants = teasers[Object.keys(teasers)[0]].details.variants.sort()
 
         const $ZdGWrapper = document.getElementById(Object.keys(teasers)[0])
         const $select = document.createElement('select');
@@ -58,7 +58,7 @@
             const $opt = document.getElementById($select.value)
             const variant = JSON.parse($opt.dataset.variant)
             console.log(variant.url)
-            fetch(variant.url).then(raw => {
+            fetch(variant.url + "?r=" + Math.ceil(Math.random() * 100)).then(raw => {
                 if(raw.status != 200) {
                     $opt.parentNode.removeChild($opt)
                     return null

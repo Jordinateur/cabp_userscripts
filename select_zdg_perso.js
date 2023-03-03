@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Select ZdG Perso
 // @namespace    https://www.credit-agricole.fr/*
-// @version      0.4
+// @version      0.5
 // @description  Change perso
 // @author       You
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/select_zdg_perso.js
@@ -68,15 +68,23 @@
                 $ZdGWrapper.innerHTML = html ? html : "<p>Erreur</p>";
                 if(html){
                     const $npc_vars = $ZdGWrapper.querySelectorAll('[data-vp]')
-                    console.log($npc_vars)
+                    //console.log($npc_vars)
                     const pj = $opt.id.match(/mk\-(pj\d.*)\-.*/)[1]
                     const a = $opt.id.match(/\-(a\d.*)$/)[1]
-                    console.log(pj,a)
+                    //console.log(pj,a)
                     $npc_vars.forEach(vp => {
                         let var_path = vp.getAttribute('data-vp').replace('/','.')
                         var_path = var_path.replace('marketing-messages','marketing-messages.marketingMessages.mk-'+pj+'-'+a+'.customValues')
                         vp.innerHTML = resolve(var_path,ctxHub.store)
                     })
+                    // Respect script injection
+                    const scripts = $ZdGWrapper.getElementsByTagName('script')
+                    if(scripts.length > 0){
+                        const $s = scripts[0]
+                        const $$s = document.createElement('script');
+                        $$s.src = $s.src
+                        $ZdGWrapper.appendChild($$s);
+                    }
                 }
             }).catch(e => {
                 console.log(e)

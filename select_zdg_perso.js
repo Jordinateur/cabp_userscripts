@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Select ZdG Perso
 // @namespace    https://www.credit-agricole.fr/*
-// @version      0.5
+// @version      0.6
 // @description  Change perso
 // @author       You
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/select_zdg_perso.js
@@ -22,8 +22,8 @@
     function createZdGSelector(){
         const ctxHub = JSON.parse(sessionStorage.getItem('ContextHubPersistence'))
         const teasers = ContextHub.SegmentEngine.PageInteraction.TeaserManager.getAllTeasers()
+        if(teasers.length < 1) return
         const variants = teasers[Object.keys(teasers)[0]].details.variants.sort()
-
         const $ZdGWrapper = document.getElementById(Object.keys(teasers)[0])
         const $select = document.createElement('select');
         $select.style.color = 'black';

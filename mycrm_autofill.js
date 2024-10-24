@@ -2,7 +2,7 @@
 // @name         Autocomplete vars MyCRM
 // @namespace    http://tampermonkey.net/
 // @downloadURL  https://github.com/Jordinateur/cabp_userscripts/raw/master/mycrm_autofill.js
-// @version      0.6
+// @version      0.7
 // @description  try to take over the world!
 // @author       You
 // @match        https://nep10-crmsprdapa.ca-technologies.fr/CRMServices/MyCRM/index.php?m=workflow&p=ficheDemande&num=*
@@ -186,7 +186,7 @@
         $('#livraison-comm table tr td:nth-child(2)').each((i,el) => {
             if(el.innerText == 'Email Unica') {
                 el.nextElementSibling.childNodes[0].value = 'RDV à l’agence de xxx pour parler de vos assurances !'
-                el.nextElementSibling.nextElementSibling.childNodes[0].value = el.previousElementSibling.innerText.includes('DMS') ? 'CR887-F864-PARLONS-ASSU-PRO' : 'CR887-F863-PARLONS-ASSU-PART'
+                el.nextElementSibling.nextElementSibling.childNodes[0].value = 'CR887-F864-PARLONS-ASSU-PRO'
                 setTimeout(() => {
                     saveAction(el.nextElementSibling.nextElementSibling.childNodes[0].dataset.idaction, $(email_parlons_assurance))
                 }, (i * 300) + 200)
